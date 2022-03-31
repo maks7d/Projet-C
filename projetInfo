@@ -74,12 +74,16 @@ int connexion(struct client tab[], int position)
 		int num_fonction = tab[position].fonction;
 		return num_fonction;
 }
+void menus()//affichage des menus rentrés par le cuisinier 
+{
 
+}
 int main()
 {
 	struct client tableau[taille];
-	int replay = 0, choix, position = 0;
+	int replay = 0, choix, position = 0, fonction;
 	do {
+		
 		printf("Creer un compte...1\n");
 		printf("Se connecter......2\n");
 		printf("Plats proposes....3\n");
@@ -92,13 +96,24 @@ int main()
 			position++;
 			break;
 		case 2:	//connexion a un compte
-			connexion(tableau, position);
+			fonction = connexion(tableau, position);
+			if (fonction == 1) // etudiant
+			{
+
+			}
+			else if (fonction == 2) //cuisinier
+			{
+				
+			}
+			else if (fonction == 3) //admin
+			{
+
+			}
 			break;
 		case 3:	//plats proposés
-			
+			menus();
 			break;
 		}
-
-		
+	
 	}while (replay == 0); //boucle de rejouer
 }
