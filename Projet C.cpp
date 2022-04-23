@@ -1,3 +1,4 @@
+#define _CRT_SECURE_NO_DEPRECATE
 #include <iostream>
 #include <string.h>
 #include <stdio.h>
@@ -21,13 +22,13 @@ void affich_tab(struct client tab[], int position)
 		printf("%s", tab[position].prenom);
 	printf("");
 }
-void creation(struct client tab[], int position)
+void creation(struct client tab[], int position)//creation d'un nouveau compte
 {
 	char fonction[25];
 	bool fonction_valide;
 	fflush(stdin);
 	fseek(stdin, 0, SEEK_END);
-	printf("Entrez le nom : \n");
+	printf("Entrez le nom : \n");//saisie des infos du compte
 	fgets(tab[position].nom, 25, stdin);
 	fflush(stdin);
 	printf("Entrez le prenom : \n");
@@ -48,19 +49,16 @@ void creation(struct client tab[], int position)
 			printf("Entree invalide\n");
 		
 	} while (!fonction_valide);
-
+	//attribution d'un nb a une fonction
 		if (strcmp(fonction, "etudiant") == 0)
 			tab[position].fonction = 1;
 		else if (strcmp(fonction, "cuisinier") == 0)
 			tab[position].fonction = 2;
 		else if (strcmp(fonction, "administration") == 0)
 			tab[position].fonction = 3;
-	
-	//ajout dans le fichier
 }
-int connexion(struct client tab[], int indice)
+int connexion(struct client tab[], int indice) //connexion
 {
-
 	char prenom[25], nom[25];
 	int mdp, trouve = 0, i=0;
 	fseek(stdin, 0, SEEK_END);
@@ -70,9 +68,9 @@ int connexion(struct client tab[], int indice)
 	fgets(nom, 25, stdin);
 	printf("\nmot de passe : ");
 	scanf_s("%d", &mdp);
-
+	//recherche du compte correspondant dans le tab
 	do {
-		printf("%d\n", indice);
+		
 		if (strcmp(prenom, tab[i].prenom) == 0)
 		{
 			if (strcmp(nom, tab[i].nom) == 0)
@@ -93,16 +91,32 @@ void affich_menus()//affichage des menus rentrés par le cuisinier
 {
 
 }
+void enregistrer(struct client tab[], int position)//enregistrement du tableau dans le fichier comptes.dat
+{
+	FILE *fichier;
+	fichier = fopen("comptes.dat", "w");
+	for (int i = 0; i < position; i++)
+		fwrite(&tab[i], sizeof(struct client), 1, fichier);
+	fclose(fichier);
+}
+int lire(struct client tab[])//lecture du fichier
+{
+	int i = 0;
+	FILE *fichier = fopen("comptes.dat", "r");
+	while (fread(&tab[i], sizeof(struct client), 1, fichier) && !feof(fichier))
+			i++;
+	return i;
+}
 int main()
 {
 	struct client tableau[taille];
 	int replay = 0, choix, position = 0, fonction;
+	position = lire(tableau);
 	do {
-		printf("-------------------\n");
-		printf("Creer un compte...1\n");
+		printf("-------------------\nCreer un compte...1\n");
 		printf("Se connecter......2\n");
 		printf("Plats proposes....3\n");
-		printf("Statistiques......4\n");
+		printf("Statistiques......4\n-------------------");
 		fflush(stdin);
 		scanf_s("%d", &choix);
 		switch (choix)
@@ -125,12 +139,14 @@ int main()
 				case 1 :
 					printf("\nQuelle somme d'argent voulez-vous ajouter ?\n");				
 					scanf_s("%d", &tableau[position].solde);
-					printf("%d euros ajoute sur le compte de %s\n", &tableau[position].prenom);
+					printf("%d euros ajoute sur le compte de %s\n", tableau[position].solde, tableau[position].prenom);
 					break;
 				case 2 :
 					
 					break;
 				case 3:
+					printf("Fin du programme, enregistrement dans le fichier");
+					enregistrer(tableau, position);
 					break;
 				}
 			}
